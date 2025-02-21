@@ -1,5 +1,21 @@
+interface ListItem {
+    key: number;
+    label: string;
+}
+
 class TransferComponent {
-    constructor(sourceData, targetData, sourceHeader, targetHeader) {
+    private sourceData: ListItem[];
+    private targetData: ListItem[];
+    private sourceHeader: string;
+    private targetHeader: string;
+    private container: HTMLDivElement;
+    private sourceSearchInput: HTMLInputElement;
+    private targetSearchInput: HTMLInputElement;
+    private sourceListContainer: HTMLDivElement;
+    private targetListContainer: HTMLDivElement;
+    private buttonContainer: HTMLDivElement;
+
+    constructor(sourceData: ListItem[], targetData: ListItem[], sourceHeader: string, targetHeader: string) {
         this.sourceData = sourceData;
         this.targetData = targetData;
         this.sourceHeader = sourceHeader || 'Source List';
@@ -48,7 +64,7 @@ class TransferComponent {
         return input;
     }
 
-    createListContainer(headerText, id, data) {
+    createListContainer(headerText: string, id: any, data: any[]) {
         const container = document.createElement('div');
         container.className = 'list-container';
 
@@ -64,7 +80,7 @@ class TransferComponent {
             const listItem = document.createElement('li');
             listItem.className = 'list-item';
             listItem.textContent = item.label;
-            listItem.dataset.key = item.key;
+            listItem.dataset.key = item.key.toString();
             listItem.onclick = () => this.toggleSelection(listItem);
             listBox.appendChild(listItem);
         });
@@ -74,7 +90,7 @@ class TransferComponent {
         return container;
     }
 
-    toggleSelection(item) {
+    toggleSelection(item: HTMLLIElement) {
         if (item.classList.contains('selected')) {
             item.classList.remove('selected');
         } else {
@@ -85,7 +101,7 @@ class TransferComponent {
     moveToTarget() {
         const selectedItems = Array.from(document.querySelectorAll('#source-list .selected'));
         selectedItems.forEach(item => {
-            const key = parseInt(item.dataset.key);
+            const key = parseInt((item as HTMLLIElement).dataset.key);
             const foundItem = this.sourceData.find(data => data.key === key);
             if (foundItem) {
                 this.targetData.push(foundItem);
@@ -99,7 +115,7 @@ class TransferComponent {
     moveToSource() {
         const selectedItems = Array.from(document.querySelectorAll('#target-list .selected'));
         selectedItems.forEach(item => {
-            const key = parseInt(item.dataset.key);
+            const key = parseInt((item as HTMLLIElement).dataset.key);
             const foundItem = this.targetData.find(data => data.key === key);
             if (foundItem) {
                 this.sourceData.push(foundItem);
@@ -131,7 +147,7 @@ class TransferComponent {
         }
     }
 
-    filterList(event) {
+    filterList(event: any) {
         const inputValue = event.target.value.toLowerCase();
         const isSource = event.target === this.sourceSearchInput;
         const dataList = isSource ? this.sourceData : this.targetData;
@@ -145,7 +161,7 @@ class TransferComponent {
                 const listItem = document.createElement('li');
                 listItem.className = 'list-item';
                 listItem.textContent = item.label;
-                listItem.dataset.key = item.key;
+                listItem.dataset.key = item.key.toString();
                 listItem.onclick = () => this.toggleSelection(listItem);
                 listBox.appendChild(listItem);
             }
@@ -157,7 +173,7 @@ class TransferComponent {
         this.filterList({ target: this.targetSearchInput });
     }
 
-    mount(element) {
+    mount(element: any) {
         element.appendChild(this.container);
     }
 }
@@ -166,7 +182,7 @@ class TransferComponent {
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     module.exports = TransferComponent;
 } else {
-    window.TransferComponent = TransferComponent;
+    (window as any).TransferComponent = TransferComponent;
 }
 
 export default TransferComponent;

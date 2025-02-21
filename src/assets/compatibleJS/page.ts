@@ -1,5 +1,13 @@
 export class Hero {
-    constructor(name, data = {win_times: 0, lose_times: 0, scores:  0, vote_times:  0, win_rate: -1}) {
+
+    public name: string;
+    public win_times: number;
+    public lose_times: number;
+    public scores: number;
+    public vote_times: number;
+    public win_rate: string;
+  
+    constructor(name, data = {win_times: 0, lose_times: 0, scores:  0, vote_times:  0, win_rate: '-1'}) {
         this.name = name;
         this.win_times = data.win_times;
         this.lose_times = data.lose_times;

@@ -1,5 +1,15 @@
+type TableData = (string | number)[][];
+type Labels = string[];
+
 class TableComponent {
-    constructor(data, labels) {
+
+    private data: TableData;
+    private labels: Labels;
+    private container: HTMLDivElement;
+    private headerRow: HTMLDivElement;
+    private bodyRows: HTMLDivElement[];
+
+    constructor(data: TableData, labels: Labels) {
         this.data = data;
         this.labels = labels;
 
@@ -48,7 +58,7 @@ class TableComponent {
             rowData.forEach(value => {
                 const cell = document.createElement('div');
                 cell.className = 'table-cell';
-                cell.textContent = value;
+                cell.textContent = value.toString();
 
                 row.appendChild(cell);
             });
@@ -57,14 +67,14 @@ class TableComponent {
         });
     }
 
-    selectRow(row) {
+    selectRow(row: HTMLDivElement) {
         const selectedRows = this.container.querySelectorAll('.selected');
         selectedRows.forEach(selectedRow => selectedRow.classList.remove('selected'));
 
         row.classList.add('selected');
     }
 
-    updateData(newData, newLabels) {
+    updateData(newData: TableData, newLabels: Labels) {
         this.data = newData;
         this.labels = newLabels;
 
@@ -80,7 +90,7 @@ class TableComponent {
         this.bodyRows.forEach(row => this.container.appendChild(row));
     }
 
-    mount(element) {
+    mount(element: any) {
         element.appendChild(this.container);
     }
 }
@@ -89,7 +99,7 @@ class TableComponent {
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     module.exports = TableComponent;
 } else {
-    window.TableComponent = TableComponent;
+    (window as any).TableComponent = TableComponent;
 }
 
 export default TableComponent;;

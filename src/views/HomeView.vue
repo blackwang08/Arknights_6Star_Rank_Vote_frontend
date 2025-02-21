@@ -179,9 +179,9 @@
                             <th>杯型</th>
                             <th>排名</th>
                             <th>干员代号</th>
-                            <th>胜率<span id="win_rate" class="sort-icon select down" @click="sort_table(this)"></span>
+                            <th>胜率<span id="win_rate" class="sort-icon select down" @click="sort_table"></span>
                             </th>
-                            <th>得分<span id="scores" class="sort-icon down" @click="sort_table(this)"></span>
+                            <th>得分<span id="scores" class="sort-icon down" @click="sort_table"></span>
                             </th>
                         </tr>
                     </thead>
@@ -228,19 +228,14 @@
 </template>
 
 <script>
-import { DATA_DICT } from '@/assets/compatibleJS/datadict.js'
-import { ID_NAME_DICT } from '@/assets/compatibleJS//id_operator';
+import { DATA_DICT } from '@/assets/compatibleJS/datadict'
+import { ID_NAME_DICT } from '@/assets/compatibleJS/id_operator';
 import palette from 'google-palette';
 import geostats from 'geostats';
-import { Hero } from '@/assets/compatibleJS/page.js';
-// import { TransferComponent } from '@/assets/compatibleJS/transfer.js';
-// import { TableComponent } from '@/assets/compatibleJS/table.js';
-// const TransferComponent = require('@/assets/compatibleJS/transfer.js');
-import TransferComponent from '@/assets/compatibleJS/transfer.js';
-// const TableComponent = require('@/assets/compatibleJS/table.js');
-import TableComponent from '@/assets/compatibleJS/table.js';
+import { Hero } from '@/assets/compatibleJS/page';
+import TransferComponent from '@/assets/compatibleJS/transfer';
+import TableComponent from '@/assets/compatibleJS/table';
 import Worker from '@/utils/saveScore.worker.js?worker';
-// import LZString from 'lz-string';
 // @ is an alias to /src
 export default {
   data() {
@@ -479,28 +474,28 @@ export default {
       },
       sort_table(element) {
         let is_desc = true;
-        if (!element.classList.contains('select')) {
+        if (!element.currentTarget.classList.contains('select')) {
             // 取消其他元素的selects
             const selects = document.querySelectorAll('.select');
             selects.forEach(element => {
                 element.classList.remove('select');
             });
             // 本元素添加select
-            element.classList.add("select");
+            element.currentTarget.classList.add("select");
             // 按照本元素的当前状态排序
-            is_desc = element.classList.contains("down");
+            is_desc = element.currentTarget.classList.contains("down");
         }
         else {
             // 本元素有select，则对调本元素的down和up
-            let is_old_desc = element.classList.contains("down");
+            let is_old_desc = element.currentTarget.classList.contains("down");
             is_desc = !is_old_desc;
             if (is_old_desc) {
-                element.classList.remove('down');
-                element.classList.add("up");
+                element.currentTarget.classList.remove('down');
+                element.currentTarget.classList.add("up");
             }
             else {
-                element.classList.remove('up');
-                element.classList.add("down");
+                element.currentTarget.classList.remove('up');
+                element.currentTarget.classList.add("down");
             }
         }
         this.flush_self(element.id, is_desc);
