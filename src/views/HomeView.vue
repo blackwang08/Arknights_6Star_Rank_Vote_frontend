@@ -231,13 +231,15 @@
 import { DATA_DICT } from '@/assets/compatibleJS/datadict.js'
 import { ID_NAME_DICT } from '@/assets/compatibleJS//id_operator';
 import palette from 'google-palette';
-const geostats = require('geostats');
+import geostats from 'geostats';
 import { Hero } from '@/assets/compatibleJS/page.js';
 // import { TransferComponent } from '@/assets/compatibleJS/transfer.js';
 // import { TableComponent } from '@/assets/compatibleJS/table.js';
-const TransferComponent = require('@/assets/compatibleJS/transfer.js');
-const TableComponent = require('@/assets/compatibleJS/table.js');
-import Worker from '@/utils/saveScore.worker.js';
+// const TransferComponent = require('@/assets/compatibleJS/transfer.js');
+import TransferComponent from '@/assets/compatibleJS/transfer.js';
+// const TableComponent = require('@/assets/compatibleJS/table.js');
+import TableComponent from '@/assets/compatibleJS/table.js';
+import Worker from '@/utils/saveScore.worker.js?worker';
 // import LZString from 'lz-string';
 // @ is an alias to /src
 export default {
@@ -286,7 +288,7 @@ export default {
 
       audio: null,
       playPauseBtn: null,
-      playSrc: require("../assets/tongtong.mp3"),
+      playSrc: new URL('../assets/tongtong.mp3', import.meta.url).href,
       playList: [
           { src: "tongtong.mp3", type: "audio/mpeg" },
           { src: "xuelangdahui.mp3", type: "audio/mpeg" }

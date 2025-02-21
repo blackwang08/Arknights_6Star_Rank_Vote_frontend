@@ -169,5 +169,4 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     window.TransferComponent = TransferComponent;
 }
 
-
-
+export default TransferComponent;
