@@ -1,16 +1,19 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "es5",
     "module": "esnext",
+    "baseUrl": "./",
     "moduleResolution": "node",
-    "baseUrl": ".",
     "paths": {
       "@/*": [
         "src/*"
       ]
     },
-    "types": [
-      "vite/client"
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "scripthost"
     ]
   }
 }
