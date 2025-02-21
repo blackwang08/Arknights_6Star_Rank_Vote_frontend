@@ -1,26 +1,21 @@
-# 明日方舟六星 强度投票箱前端
+## 使用
 
-这里是明日方舟六星 强度投票箱前端的仓库，使用vite + VUE+ js进行开发，有问题或建议请提交issue
+安装依赖:
 
-## Project setup
-```
+```bash
+# pnpm
+pnpm install
+
+# npm
 npm install
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+运行:
 
-### Compiles and minifies for production
-```
-npm run build
-```
+```bash
+# pnpm
+pnpm dev
 
-### Lints and fixes files
+# npm
+npm run dev
 ```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
