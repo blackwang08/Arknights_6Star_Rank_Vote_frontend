@@ -1,5 +1,3 @@
-import type { Operator } from '../types/operator'
-
 /**
  * Get data of operator by name or id
  *
@@ -21,8 +19,8 @@ import type { Operator } from '../types/operator'
  * console.log(operator)                  // { name: "荒芜拉普兰德", ... }
  * ```
  */
-export function useOperator(nameOrId?: string | number) {
-  const nameRef = ref(ensureOperatorName(nameOrId))
+export function useOperator(target?: string | number) {
+  const nameRef = ref(ensureOperatorName(target))
 
   const operator = reactive<Partial<Operator>>({})
 
@@ -36,7 +34,7 @@ export function useOperator(nameOrId?: string | number) {
   watch(nameRef, update)
 
   return {
-    update: (nameOrId: number | string) => (nameRef.value = ensureOperatorName(nameOrId)),
+    update: (target?: number | string) => (nameRef.value = ensureOperatorName(target)),
     operator: readonly(operator),
   }
 }

@@ -1,12 +1,15 @@
 import operatorsOrigin from './data/operators.json'
 
-type OperatorName = keyof typeof operatorsOrigin
+export type OperatorName = keyof typeof operatorsOrigin
+export type OperatorTarget = OperatorName | number
 
 export interface Operator<T extends OperatorName = OperatorName> {
   name: T
   id: number
   avatar: string
 }
+
+export type OperatorReadonly = Readonly<Operator>
 
 const { operators, idToNameCache } = loadCache()
 
@@ -48,22 +51,26 @@ function loadCache() {
 /**
  * 根据参数获取存在的干员名
  */
-export function ensureOperatorName(nameOrId: any) {
-  if (!nameOrId)
+export function ensureOperatorName(target: any) {
+  const argType = typeof target
+
+  if (argType !== 'string' && argType !== 'number')
     return undefined
 
-  if (typeof nameOrId === 'number')
-    return idToNameCache.get(getIdKey(nameOrId))
+  if (argType === 'number') {
+    const name = idToNameCache.get(getIdKey(target))
+    return name ? name as OperatorName : undefined
+  }
 
-  return operators.has(nameOrId as OperatorName) ? nameOrId as OperatorName : undefined
+  return operators.has(target) ? target as OperatorName : undefined
 }
 
 /**
  * 根据 name 或 id 判断干员是否存在
  */
-export function exisitsOperator(nameOrId: string | number) {
-  const name = ensureOperatorName(nameOrId)
-  return name && operators.has(name)
+export function exisitsOperator(target: string | number) {
+  const name = ensureOperatorName(target)
+  return name ? operators.has(name) : false
 }
 
 /**
@@ -74,15 +81,15 @@ export const getOperator = findOperator
 /**
  * 根据 name 或 id 获取干员
  */
-export function findOperator(nameOrId: string | number) {
-  const name = ensureOperatorName(nameOrId)
-  return name && operators.get(name)
+export function findOperator(target: string | number) {
+  const name = ensureOperatorName(target)
+  return name ? operators.get(name) : undefined
 }
 
 /**
- * 检查数据是否有效
+ * 检查干员数据是否合法
  */
-export function isValidOperator(data: any, ignore: Array<'name' | 'id' | 'avatar'> = []): data is Operator {
+export function isOperatorType(data: any, ignore: Array<'name' | 'id' | 'avatar'> = []): data is Operator {
   const validKeys = (['name', 'id', 'avatar'] as const).filter(k => !ignore.includes(k))
   return validKeys.every(k => data[k])
 }

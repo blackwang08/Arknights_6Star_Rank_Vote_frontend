@@ -1,4 +1,4 @@
-export function formatTime(timestamp) {
+export function formatTime(timestamp: number | string) {
   if (typeof timestamp === 'string')
     return timestamp
 

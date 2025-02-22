@@ -2,9 +2,7 @@
 </script>
 
 <template>
-  <div>
-    hello
-  </div>
+  <OperatorVote />
 </template>
 
 <style scoped>

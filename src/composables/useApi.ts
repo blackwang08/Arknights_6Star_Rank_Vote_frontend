@@ -6,6 +6,5 @@ export const useApi = createFetch({
     headers: {
       'Content-Type': 'application/json',
     },
-    mode: 'no-cors',
   },
 })

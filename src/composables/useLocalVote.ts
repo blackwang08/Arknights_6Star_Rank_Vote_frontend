@@ -1,9 +1,3 @@
-import { STORAGE_KEYS } from '@/constants/storage'
-
-/**
- * FIXME: 或许没有必要是 store
- */
-
 interface LocalVoteItem {
   win_times: number
   lose_times: number
@@ -14,8 +8,8 @@ interface LocalVoteItem {
 
 type LocalVoteResult = Record<Operator['name'], LocalVoteItem>
 
-export const useLocalVoteStore = defineStore('localVote', () => {
-  const result = useStorage(STORAGE_KEYS.VOTE_RESULT, {} as LocalVoteResult)
+export function useLocalVote() {
+  const data = useStorage(STORAGE_KEYS.VOTE_RESULT, {} as LocalVoteResult)
 
   /**
    * 创建数据项，确保类型一致
@@ -25,12 +19,12 @@ export const useLocalVoteStore = defineStore('localVote', () => {
   }
 
   function getVoteItem(name: OperatorName) {
-    return result.value[name] || createVoteItem()
+    return data.value[name] || createVoteItem()
   }
 
   function updateResult(name: OperatorName, item: Partial<LocalVoteItem>) {
-    const opter = result.value[name] || createVoteItem()
-    result.value = { ...result.value, [name]: { ...opter, ...item } }
+    const opter = data.value[name] || createVoteItem()
+    data.value = { ...data.value, [name]: { ...opter, ...item } }
   }
 
   /**
@@ -62,30 +56,30 @@ export const useLocalVoteStore = defineStore('localVote', () => {
   /**
    * 获取本地自己投票的数据
    *
-   * 返回类型和组件 `<VoteTable />` 的 `props.data` 一致
+   * 返回类型和接口 `/view_final_order` 的一致
    */
-  function getFinalOrder() {
-    const name: OperatorName[] = []
-    const rate: number[] = []
-    const score: number[] = []
+  function getSortedData() {
+    const names: OperatorName[] = []
+    const rates: number[] = []
+    const scores: number[] = []
 
-    const entries = Object.entries(result.value)
+    const entries = Object.entries(data.value)
       .map(([name, { win_rate, scores }]) => ({ name, rate: win_rate, score: scores }))
       .sort((a, b) => b.rate - a.rate)
 
     entries.forEach((d) => {
-      name.push(d.name as OperatorName)
-      rate.push(d.rate)
-      score.push(d.score)
+      names.push(d.name as OperatorName)
+      rates.push(d.rate)
+      scores.push(d.score)
     })
 
-    return { name, rate, score }
+    return { names, rates, scores }
   }
 
   return {
-    result,
+    data,
     assignWinner,
     assignLoser,
-    getFinalOrder,
+    getSortedData,
   }
-})
+}

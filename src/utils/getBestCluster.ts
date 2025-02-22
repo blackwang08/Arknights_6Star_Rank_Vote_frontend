@@ -2,7 +2,7 @@
 // @ts-expect-error
 import Geostats from 'geostats'
 
-function getClusterList(data_array, bound_list) {
+function getClusterList(data_array: any, bound_list: any) {
   let i
   let j
   let k = 0
@@ -30,7 +30,7 @@ function getClusterList(data_array, bound_list) {
   return cluster_list
 }
 
-function getSDCM(cluster_list) {
+function getSDCM(cluster_list: string | any[]) {
   const serie = new Geostats(cluster_list[0])
   let SDCM = serie.variance() // the Sum of squared Deviations about Class Mean
 
@@ -41,7 +41,7 @@ function getSDCM(cluster_list) {
   return SDCM
 }
 
-export function getBestCluster(data_array) {
+export function getBestCluster(data_array: any) {
   const serie = new Geostats(data_array)
   const SDAM = serie.variance()
 

@@ -13,7 +13,6 @@ export default defineConfig({
       include: [
         /\.[tj]sx?$/,
         /\.vue$/,
-        /\.vue\?vue/,
       ],
       imports: [
         'vue',
@@ -31,11 +30,11 @@ export default defineConfig({
         './src/constants/**',
         './src/composables/**',
         './src/store/**',
-        // './src/utils-auto/**',
-        {
-          glob: './src/utils-auto/**',
-          types: false,
-        },
+        './src/shared/**',
+        // {
+        //   glob: './src/shared/**',
+        //   types: false,
+        // },
         {
           glob: './src/types',
           types: true,
@@ -46,12 +45,11 @@ export default defineConfig({
       viteOptimizeDeps: true,
     }),
 
-    Inspect(),
     Components({
-      extensions: ['vue'],
       dts: 'src/components.d.ts',
-      include: [/\.vue$/],
     }),
+
+    Inspect(),
   ],
   resolve: {
     alias: [
