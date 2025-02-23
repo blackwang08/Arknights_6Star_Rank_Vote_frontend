@@ -1,0 +1,26 @@
+<script setup lang="ts">
+const title = SITE.title
+</script>
+
+<template>
+  <div class="compare-center">
+    <h1 class="compare__header">
+      {{ title }}
+    </h1>
+  </div>
+</template>
+
+<style scoped>
+.compare-center {
+    display: flex;
+    align-items: center;
+    flex-flow: column nowrap;
+}
+
+h1 {
+    margin-top: 0;
+    padding-top: 0;
+    width: 6em;
+    text-align: center;
+}
+</style>

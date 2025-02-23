@@ -5,8 +5,7 @@ interface NewCompareResponse {
   code: string
 }
 
-const { operator: opter1, update: upOpter1 } = useOperator()
-const { operator: opter2, update: upOpter2 } = useOperator()
+const { current: currentVote, voteFor, pushVote, popVote } = useVoteQueue<Operator>()
 
 // resource
 // -----------------------------------------------------------
@@ -20,9 +19,10 @@ const compareBody = computed(() => {
 
 const {
   data,
+  isFetching: newCompareIsFetching,
   onFetchResponse,
   onFetchError,
-  execute,
+  execute: loadVote,
 } = useFetch<NewCompareResponse>('new_compare', { immediate: false })
   .post(compareBody)
   .json()
@@ -30,16 +30,29 @@ const {
 /**
  * 切换对比的干员
  */
-function changeOperators() {
-  execute()
+function skipCurrentVote() {
+  popVote()
+  loadVote()
 }
 
 onFetchResponse(() => {
   if (!data.value)
     return
 
-  upOpter1(data.value.left)
-  upOpter2(data.value.right)
+  const opter1 = findOperator(data.value.left)
+  const opter2 = findOperator(data.value.right)
+
+  if (opter1 && opter2) {
+    pushVote([opter1, opter2])
+  }
+  else {
+    console.error(
+      '未找到对应的干员',
+      data.value.left,
+      data.value.right,
+    )
+  }
+
   code.value = data.value.code
 })
 
@@ -50,94 +63,111 @@ onFetchError(() => {
     return
   }
   errorTimes.value++
-  execute()
+  loadVote()
 })
 
 onMounted(() => {
-  execute()
+  loadVote()
 })
 
-// vote
+// vote local
 // -----------------------------------------------------------
 
 const { assignWinner, assignLoser } = useLocalVote()
 
 const voteTimes = useStorage(STORAGE_KEYS.VOTE_TIMES, 0)
-
-const winnerId = ref<null | number>(null)
-const loserId = ref<null | number>(null)
-
-const voteBody = computed(() => {
-  return {
-    code: code.value,
-    win_id: winnerId.value,
-    lose_id: loserId.value,
-  }
-})
-
-function afterVote() {
-  const winnerName = ensureOperatorName(winnerId.value)
-  const loserName = ensureOperatorName(loserId.value)
-  if (!winnerName || !loserName)
-    return
-
+function updateLocalVote(winnerName: OperatorName, loserName: OperatorName) {
   assignWinner(winnerName)
   assignLoser(loserName)
 
   voteTimes.value++
-
-  winnerId.value = null
-  loserId.value = null
-
-  changeOperators()
 }
 
-const { execute: voteExecute, onFetchFinally: onVoteFinally, onFetchError: onVoteError } = useApi('save_score', { immediate: false }).post(voteBody)
+// vote server
+// -----------------------------------------------------------
 
-// FIXME: 待确认
-onVoteFinally(() => {
-  afterVote()
-})
+async function upLoadVote(winnerId: number, loserId: number) {
+  return useApi('save_score').post(
+    {
+      code: code.value,
+      win_id: winnerId,
+      lose_id: loserId,
+    },
+  )
+}
 
-onVoteError((...params) => {
-  console.error('上传数据出现错误', ...params)
-})
+// vote
+// -----------------------------------------------------------
 
-function voteForWinner(name?: OperatorName) {
-  if (!name) {
+async function voteForWinner(winnerIndex: number) {
+  if (!currentVote.value)
     return
-  }
 
-  const [winner, loser] = name === opter1.name ? [opter1, opter2] : [opter2, opter1]
+  const opter1 = currentVote.value[0]
+  const opter2 = currentVote.value[1]
 
-  winnerId.value = winner.id!
-  loserId.value = loser.id!
+  const [winner, loser] = winnerIndex === 0 ? [opter1, opter2] : [opter2, opter1]
 
-  voteExecute()
+  // FIXME: 暂忽略是否上传成功
+  upLoadVote(winner.id, loser.id).finally(async () => {
+    updateLocalVote(winner.name, loser.name)
+
+    await loadVote()
+
+    nextTick(() => {
+      voteFor(winnerIndex)
+    })
+  })
 }
 </script>
 
 <template>
-  <button @click="changeOperators">
-    换一组
-  </button>
-  <Container class="operator-vote">
-    <OperatorAvatar class="operator" :target="opter1.name" :hover-filter="true" @click="voteForWinner(opter1.name)" />
-    <slot />
-    <OperatorAvatar class="operator" :target="opter2.name" :hover-filter="true" @click="voteForWinner(opter2.name)" />
-  </Container>
+  <ShadowCard class="operator-vote">
+    <slot name="header" />
+    <div class="vote">
+      <OperatorAvatar class="operator" :target="currentVote?.[0].name" :hover-filter="true" @click="voteForWinner(0)" />
+      <slot name="middle" />
+      <OperatorAvatar class="operator" :target="currentVote?.[1].name" :hover-filter="true" @click="voteForWinner(1)" />
+    </div>
+    <div class="footer">
+      <slot name="footer" />
+      <Button class="next-btn" :is-loading="newCompareIsFetching" @click="skipCurrentVote">
+        换一组
+      </Button>
+    </div>
+  </ShadowCard>
 </template>
 
 <style scoped>
 .operator-vote {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+.vote {
+  position: relative;
   display: flex;
   flex-flow: row nowrap;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   gap: 20px;
 }
 
+.operator-placeholder {
+    width: 180px;
+    height: 360px;
+}
+
 .operator {
   cursor: pointer;
+}
+
+.footer {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
 }
 </style>

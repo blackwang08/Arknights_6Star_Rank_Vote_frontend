@@ -42,19 +42,20 @@ function getSDCM(cluster_list: string | any[]) {
 }
 
 export function getBestCluster(data_array: any) {
-  const serie = new Geostats(data_array)
-  const SDAM = serie.variance()
+    const serie = new Geostats(data_array);
+    const SDAM = serie.variance();  // the Sum of squared Deviations from the Array Mean
 
-  let cluster_list
-  let nclasses = 3 // 聚类簇数
-  let GVF // The Goodness of Variance Fit 方差拟合优度
-  do {
-    cluster_list = getClusterList(serie.serie, serie.getClassJenks2(nclasses++))
-    GVF = 1 - getSDCM(cluster_list) / SDAM
-  } while (GVF < 0.8)
+    let cluster_list;
+    let nclasses = 3;   // 聚类簇数
+    let GVF;    // The Goodness of Variance Fit 方差拟合优度
+    do {
+        cluster_list = getClusterList(serie.serie, serie.getClassJenks2(nclasses++));
+        GVF = 1 - getSDCM(cluster_list) / SDAM;
+    } while (GVF < 0.8);
 
-  return {
-    data: cluster_list,
-    GVF,
-  }
+
+    return {
+        data: cluster_list,
+        GVF
+    };
 }

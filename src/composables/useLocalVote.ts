@@ -59,21 +59,21 @@ export function useLocalVote() {
    * 返回类型和接口 `/view_final_order` 的一致
    */
   function getSortedData() {
-    const names: OperatorName[] = []
-    const rates: number[] = []
-    const scores: number[] = []
+    const name: OperatorName[] = []
+    const rate: number[] = []
+    const score: number[] = []
 
     const entries = Object.entries(data.value)
-      .map(([name, { win_rate, scores }]) => ({ name, rate: win_rate, score: scores }))
+      .map(([opterName, { win_rate, scores }]) => ({ name: opterName, rate: win_rate, score: scores }))
       .sort((a, b) => b.rate - a.rate)
 
     entries.forEach((d) => {
-      names.push(d.name as OperatorName)
-      rates.push(d.rate)
-      scores.push(d.score)
+      name.push(d.name as OperatorName)
+      rate.push(d.rate)
+      score.push(d.score)
     })
 
-    return { names, rates, scores }
+    return { name, rate, score }
   }
 
   return {

@@ -32,9 +32,10 @@ const operator = computed(() => target ? findOperator(target) : undefined)
     position: absolute;
     width: 100%;
     left: 0;
-    bottom: 1px;
+    bottom: 2px;
     text-align: center;
     color: var(--c-bg-elv);
+    font-weight: bold;
 }
 
 .operator-filter:hover {
