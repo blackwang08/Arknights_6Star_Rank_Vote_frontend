@@ -24,7 +24,7 @@ defineOptions({
                 <div class="footer">
                     <slot name="footer" />
                     <Button @click="close">
-                        退出
+                        关闭
                     </Button>
                 </div>
             </ShadowCard>

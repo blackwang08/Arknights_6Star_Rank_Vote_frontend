@@ -1,6 +1,4 @@
 /**
- * Get data of operator by name or id
- *
  * @example
  *
  * ```js

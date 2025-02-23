@@ -7,6 +7,13 @@ export interface Operator<T extends OperatorName = OperatorName> {
   name: T
   id: number
   avatar: string
+
+  /**
+   * 根据 id 排序后的索引
+   *
+   * 以 0 开始
+   */
+  index: number
 }
 
 export type OperatorReadonly = Readonly<Operator>
@@ -89,7 +96,7 @@ export function findOperator(target: string | number) {
 /**
  * 检查干员数据是否合法
  */
-export function isOperatorType(data: any, ignore: Array<'name' | 'id' | 'avatar'> = []): data is Operator {
-  const validKeys = (['name', 'id', 'avatar'] as const).filter(k => !ignore.includes(k))
+export function isOperatorType(data: any, ignore: Array<'name' | 'id' | 'avatar' | 'index'> = []): data is Operator {
+  const validKeys = (['name', 'id', 'avatar', 'index'] as const).filter(k => !ignore.includes(k))
   return validKeys.every(k => data[k])
 }

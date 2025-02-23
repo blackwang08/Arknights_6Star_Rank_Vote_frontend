@@ -1,5 +1,5 @@
 <script setup>
-defineProps(['tbodyStyle'])
+defineProps(['tbodyStyle', 'title'])
 
 const { getSortedData } = useLocalVote()
 
@@ -11,5 +11,11 @@ const labels = [
 </script>
 
 <template>
-  <VoteTable :data="getSortedData()" :labels="labels" cluster-key="rate" :tbody-style="tbodyStyle" />
+  <VoteTable
+    :data="getSortedData()"
+    :labels="labels"
+    cluster-key="rate"
+    :tbody-style="tbodyStyle"
+    :title="title || '明日方舟六星强度个人数据'"
+  />
 </template>

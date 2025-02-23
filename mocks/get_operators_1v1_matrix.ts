@@ -5,7 +5,7 @@ import data from './data/matrix.json'
 export default [
   {
     url: '/get_operators_1v1_matrix',
-    method: 'get',
+    method: 'post',
     response: () => {
       return data
     },
