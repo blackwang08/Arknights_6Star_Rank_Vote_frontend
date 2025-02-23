@@ -53,8 +53,9 @@ export default defineConfig((env) => {
       Inspect(),
 
       viteMockServe({
-        mockPath: './src/mocks',
+        mockPath: './mocks',
         enable: env.command === 'serve',
+        // enable: false,
       }),
     ],
     resolve: {

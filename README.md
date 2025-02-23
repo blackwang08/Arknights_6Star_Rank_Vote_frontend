@@ -25,3 +25,21 @@ pnpm dev
 # npm
 npm run dev
 ```
+
+## mocks
+
+可以在 `vite.config.ts` 选择是否开启，更改 `enable` 的值
+
+```ts
+{
+  plugins: [
+    // ....
+
+    viteMockServe({
+      mockPath: './mocks',
+      // enable: env.command === 'serve',
+      enable: false,
+    }),
+  ]
+}
+```
